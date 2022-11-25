@@ -12,7 +12,6 @@ import traceback
 
 DB_PATH = os.environ.get('DSO_DB_PATH', './dso-guide.db')
 LOG_PATH = os.environ.get('DSO_LOG_PATH', 'dso-guide.log')
-WEB_PORT = os.environ.get('WEB_PORT', 5000)
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -368,4 +367,4 @@ def log_exceptions(e):
 
 
 if __name__ == "__main__":
-  app.run(host='0.0.0.0', port=WEB_PORT)
+  app.run(host='0.0.0.0')
