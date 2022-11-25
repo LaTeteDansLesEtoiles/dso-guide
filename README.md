@@ -13,8 +13,14 @@ Search catalogs of deep sky objects and plan your observations.
 - `docker container rm dso-guide ; docker image rm dso-guide ; docker build -t dso-guide ./`
 
 - `docker run -it -p 8765:8765 --name dso-guide dso-guide:latest`
+ 
+- Build me: `docker stop dso-guide ; docker container rm dso-guide ; docker image rm dso-guide ; docker build -t dso-guide ./`
 
-- `docker run -d -p 8765:8765 --name dso-guide dso-guide:latest`
+- Launch me: `docker run -d -p 8765:80 --name dso-guide dso-guide:latest`
+
+- Run GUI here: `http://127.0.0.1:8765/index.html`
+
+- Run Web Seervices here: `http://127.0.0.1:8765/api/v1/login`
 
 ## Tools used
 
@@ -145,11 +151,25 @@ Search catalogs of deep sky objects and plan your observations.
 
 - https://launchschool.com/books/sql/read/table_relationships
 
+- https://www.geeksforgeeks.org/difference-between-run-vs-cmd-vs-entrypoint-docker-commands/
+
+- https://betterprogramming.pub/how-does-docker-port-binding-work-b089f23ca4c8
+
+- https://itnext.io/git-fixup-your-commit-e1047f2fb966
+
+- https://www.delftstack.com/fr/howto/git/git-squash-commits/
+
+- https://riptutorial.com/flask/example/16286/using-uwsgi-to-run-a-flask-application
+
+- https://stackoverflow.com/questions/16264213/uwsgi-python3-plugin-doesnt-work
+
 ### Security
 
 - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
 
 - [HMAC explanation](https://www.ida.liu.se/~TDP024/labs/hmacarticle.pdf)
+
+- https://stackoverflow.com/questions/57734669/gitgithub-com-permission-denied-publickey
 
 - https://stackoverflow.com/questions/549/the-definitive-guide-to-form-based-website-authentication
 
