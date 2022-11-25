@@ -10,6 +10,12 @@ Search catalogs of deep sky objects and plan your observations.
 
 - `docker run -it -p 80:80 dso-guide:latest`
 
+- `docker container rm dso-guide ; docker image rm dso-guide ; docker build -t dso-guide ./`
+
+- `docker run -it -p 8765:8765 --name dso-guide dso-guide:latest`
+
+- `docker run -d -p 8765:8765 --name dso-guide dso-guide:latest`
+
 ## Tools used
 
 - Server-side:

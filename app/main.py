@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import flask
 from flask import request, jsonify, render_template
 import sqlite3
@@ -8,8 +9,10 @@ import logging.handlers
 import time
 import traceback
 
+
 DB_PATH = os.environ.get('DSO_DB_PATH', './dso-guide.db')
-LOG_PATH = os.environ.get('DSO_LOG_PATH', './dso-guide.log')
+LOG_PATH = os.environ.get('DSO_LOG_PATH', 'dso-guide.log')
+WEB_PORT = os.environ.get('WEB_PORT', 5000)
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -22,6 +25,7 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+@app.route("/login")
 def login(user, password, cursor):
     """ Devuelve true o false """
     user = user.lower()
@@ -362,6 +366,6 @@ def log_exceptions(e):
 
     return "Internal Server Error", 500
 
-if __name__ == "__main__":
 
-    app.run(host="localhost", port=5000)
+if __name__ == "__main__":
+  app.run(host='0.0.0.0', port=WEB_PORT)
