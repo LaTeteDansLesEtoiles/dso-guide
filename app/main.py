@@ -31,25 +31,28 @@ def dict_factory(cursor, row):
 def login(user, password, cursor):
     """ Devuelve true o false """
     user = user.lower()
-    if cursor.execute('SELECT username FROM users WHERE username=?;',(user,)).\
-      fetchone():
 
-        database_password = cursor.execute(
-          'SELECT password FROM users WHERE username=?;',(user,)).fetchone()
-        salt = cursor.execute('SELECT salt FROM users WHERE username=?;',(user,)).fetchone()
-        salt = salt['salt']
-        salt = salt.encode('utf-8')
-        pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-        pwdhash = binascii.hexlify(pwdhash)
-        pwdhash = pwdhash.decode('utf-8')
+    try:
+        if cursor.execute('SELECT username FROM users WHERE username=?;',(user,)).\
+          fetchone():
 
-        if pwdhash == database_password['password']:
-            return True
+            database_password = cursor.execute(
+              'SELECT password FROM users WHERE username=?;',(user,)).fetchone()
+            salt = cursor.execute('SELECT salt FROM users WHERE username=?;',(user,)).fetchone()
+            salt = salt['salt']
+            salt = salt.encode('utf-8')
+            pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+            pwdhash = binascii.hexlify(pwdhash)
+            pwdhash = pwdhash.decode('utf-8')
+
+            if pwdhash == database_password['password']:
+                return True
+            else:
+                return False
         else:
             return False
-    else:
-        return False
-
+    except sqlite3.DatabaseError:
+        traceback.print_exc()
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -165,11 +168,20 @@ def api_addusers():
                     lon = 0
 
                     try:
-                        db.cur.execute('INSERT INTO users values (?, ?, ?, ?, ?);', (user, pwdhash, lat, lon, salt))
+                        db.cur.execute('INSERT INTO users values '
+                                       '(?, ?, ?, ?, ?);',
+                                       (user, pwdhash, lat, lon, salt))
                         return "Operation Successful \n", 200
-                    except sqlite3.DatabaseError:
+                    except sqlite3.IntegrityError:
+                        traceback.print_exc()
                         return "User already exists \n ", 500
-        else:
+                    except sqlite3.DataError:
+                        traceback.print_exc()
+                        return "Operation unsuccessful \n ", 500
+                    except sqlite3.DatabaseError:
+                        traceback.print_exc()
+                        return "Database operation unsuccessful \n ", 500
+
             return "Method not allowed \n", 405
 
 

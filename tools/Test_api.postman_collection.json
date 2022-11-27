@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "7cef4b6c-05c5-4cb1-ab03-74e14c19f492",
-		"name": "Test_api",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "9e70ed00-0d55-4222-8ddc-699f39a78213",
+		"name": "dso_guide",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2379642"
 	},
 	"item": [
 		{
@@ -11,7 +12,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "eec61796-ce33-4bb6-b2ba-1acdf208e79c",
 						"exec": [
 							""
 						],
@@ -34,14 +34,15 @@
 					"raw": "{\"username\":\"testpostman\", \"password\":\"postman0\"}"
 				},
 				"url": {
-					"raw": "https://dso.mbernardi.com.ar/api/v1/users",
-					"protocol": "https",
+					"raw": "http://127.0.0.1:8765/api/v1/users",
+					"protocol": "http",
 					"host": [
-						"dso",
-						"mbernardi",
-						"com",
-						"ar"
+						"127",
+						"0",
+						"0",
+						"1"
 					],
+					"port": "8765",
 					"path": [
 						"api",
 						"v1",
@@ -57,7 +58,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5f2464f8-02b4-4bc5-8851-d145787ab3c1",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -67,18 +67,47 @@
 					}
 				}
 			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "postman0",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "postman",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"testpostman\", \"password\":\"postman0\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://dso.mbernardi.com.ar/api/v1/login",
-					"protocol": "https",
+					"raw": "http://127.0.0.1:5000/api/v1/login",
+					"protocol": "http",
 					"host": [
-						"dso",
-						"mbernardi",
-						"com",
-						"ar"
+						"127",
+						"0",
+						"0",
+						"1"
 					],
+					"port": "5000",
 					"path": [
 						"api",
 						"v1",
@@ -94,7 +123,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "29727930-5a07-44ba-a813-57bae56e9660",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -104,6 +132,9 @@
 					}
 				}
 			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"auth": {
 					"type": "basic",
@@ -122,15 +153,25 @@
 				},
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"testpostman\", \"password\":\"postman0\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "https://dso.mbernardi.com.ar/api/v1/login",
-					"protocol": "https",
+					"raw": "http://127.0.0.1:8765/api/v1/login",
+					"protocol": "http",
 					"host": [
-						"dso",
-						"mbernardi",
-						"com",
-						"ar"
+						"127",
+						"0",
+						"0",
+						"1"
 					],
+					"port": "8765",
 					"path": [
 						"api",
 						"v1",
@@ -424,7 +465,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "8bc7cd77-1980-4cdb-9355-c398a2822721",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -434,7 +474,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "8ea3ce37-d2f4-461d-9e27-de331a381274",
 				"type": "text/javascript",
 				"exec": [
 					""
