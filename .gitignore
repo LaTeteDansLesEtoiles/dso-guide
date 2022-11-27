@@ -1,3 +1,5 @@
 test.html
 .idea
 **/*.log*
+**/dso-guide.db
+**/__pycache__
