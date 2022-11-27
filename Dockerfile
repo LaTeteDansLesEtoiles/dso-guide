@@ -29,9 +29,7 @@ RUN chown www-data:www-data /etc/nginx/uwsgi_params
 ENV DSO_DB_PATH="/app/deepsky.db"
 ENV DSO_LOG_PATH="/app/dso-guide.log"
 
-# Install dependencies:
 COPY ./config/requirements.txt .
-# RUN pip3.10 install --upgrade -r /app/requirements.txt
 RUN chown -R www-data:www-data /app
 
 CMD ["/usr/bin/supervisord"]
