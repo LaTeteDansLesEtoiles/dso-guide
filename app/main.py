@@ -1,14 +1,15 @@
 #!/usr/bin/env python
-import flask
-from flask import request, jsonify, render_template
-import sqlite3
-import hashlib, os, binascii
-import re
-import os
+import binascii
+import hashlib
 import logging.handlers
+import os
+import re
+import sqlite3
 import time
 import traceback
 
+import flask
+from flask import request, jsonify
 
 DB_PATH = os.environ.get('DSO_DB_PATH', './dso-guide.db')
 LOG_PATH = os.environ.get('DSO_LOG_PATH', 'dso-guide.log')
@@ -16,21 +17,25 @@ LOG_PATH = os.environ.get('DSO_LOG_PATH', 'dso-guide.log')
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
+
 def dict_factory(cursor, row):
-    #devuelve los valores encontrados por el cursor
-    #en forma de diccionarios para mejorar el output de jsonify
+    # devuelve los valores encontrados por el cursor
+    # en forma de diccionarios para mejorar el output de jsonify
     d = {}
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
 
+
 @app.route("/login")
 def login(user, password, cursor):
     """ Devuelve true o false """
     user = user.lower()
-    if cursor.execute('SELECT username FROM users WHERE username=?;',(user,)).fetchone():
+    if cursor.execute('SELECT username FROM users WHERE username=?;',(user,)).\
+      fetchone():
 
-        database_password = cursor.execute('SELECT password FROM users WHERE username=?;',(user,)).fetchone()
+        database_password = cursor.execute(
+          'SELECT password FROM users WHERE username=?;',(user,)).fetchone()
         salt = cursor.execute('SELECT salt FROM users WHERE username=?;',(user,)).fetchone()
         salt = salt['salt']
         salt = salt.encode('utf-8')
@@ -45,18 +50,26 @@ def login(user, password, cursor):
     else:
         return False
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return "404 Page not found \n", 404
+
+
 @app.errorhandler(401)
 def invalid_credentials(e):
     return "Unauthorized \n", 401
+
+
 @app.errorhandler(405)
 def method_not_allowed(e):
     return "Method not allowed \n", 405
+
+
 @app.errorhandler(500)
 def internal_server_error(e):
     return "Internal Server Error \n", 500
+
 
 class Database:
 
@@ -75,6 +88,7 @@ class Database:
         self.conn.commit()
         self.conn.close()
 
+
 @app.route('/api/v1/login', methods=['GET'])
 def api_login():
     with Database() as db:
@@ -84,12 +98,12 @@ def api_login():
         if request.method == 'GET':
             user = request.authorization["username"]
             password = request.authorization["password"]
+
             if login(user, password, db.cur):
                 return "login succesful", 200
             else:
                 return "Unauthorized", 401
-        else:
-            return "Method not allowed \n", 405
+
 
 @app.route('/api/v1/location', methods=['GET', 'PUT'])
 def api_location():
@@ -122,6 +136,7 @@ def api_location():
         else:
             return "Unauthorized \n", 401
 
+
 @app.route('/api/v1/users', methods=['POST'])
 def api_addusers():
 
@@ -152,10 +167,11 @@ def api_addusers():
                     try:
                         db.cur.execute('INSERT INTO users values (?, ?, ?, ?, ?);', (user, pwdhash, lat, lon, salt))
                         return "Operation Successful \n", 200
-                    except sqlite3.IntegrityError:
+                    except sqlite3.DatabaseError:
                         return "User already exists \n ", 500
         else:
             return "Method not allowed \n", 405
+
 
 @app.route('/api/v1/watchlist', methods=['DELETE', 'POST', 'GET'])
 def api_watchlist():
@@ -197,6 +213,7 @@ def api_watchlist():
         else:
             return "Unauthorized \n", 401
 
+
 @app.route('/api/v1/password', methods=['PUT'])
 def api_password():
 
@@ -230,6 +247,7 @@ def api_password():
                 return "Method not allowed \n", 405
         else:
             return "Unauthorized \n", 401
+
 
 @app.route('/api/v1/watchlist/<int:star_id>', methods=['DELETE','PUT'])
 def api_objects(star_id):
@@ -272,10 +290,13 @@ def api_objects(star_id):
 
 # Logging: https://stackoverflow.com/a/39284642
 
-handler = logging.handlers.RotatingFileHandler(LOG_PATH, maxBytes=10000, backupCount=3)
+
+handler = logging.handlers.RotatingFileHandler(LOG_PATH, maxBytes=10000,
+                                               backupCount=3)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
+
 
 @app.after_request
 def log_requests(response):
@@ -303,7 +324,7 @@ def log_requests(response):
                 request_data = "{invalid JSON}"
 
         logger.error(
-            '%s %s %s %s %s %s %s\n%s\n%s',
+            '%s %s %s %s %s %s %s\n%s\n%s %s',
             timestamp,
             request.remote_addr,
             request.method,
@@ -312,7 +333,8 @@ def log_requests(response):
             username,
             response.status,
             request_data,
-            response.data
+            response.data,
+            request_data
         )
 
     except:
@@ -320,8 +342,8 @@ def log_requests(response):
         tb = traceback.format_exc()
         logger.error("Error logging %s %s", timestamp, tb)
 
-
     return response
+
 
 @app.errorhandler(Exception)
 def log_exceptions(e):
@@ -345,7 +367,6 @@ def log_exceptions(e):
             except:
                 request_data = "{invalid JSON}"
 
-
         logger.error(
             '%s %s %s %s %s 5xx INTERNAL SERVER ERROR\n%s\n%s\n%s',
             timestamp,
@@ -367,4 +388,4 @@ def log_exceptions(e):
 
 
 if __name__ == "__main__":
-  app.run(host='0.0.0.0')
+    app.run(host="localhost", port=5000)
