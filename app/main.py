@@ -96,7 +96,7 @@ class Database:
 def api_login():
     with Database() as db:
 
-        query_parameters = request.json
+        # query_parameters = request.json
 
         if request.method == 'GET':
             user = request.authorization["username"]
